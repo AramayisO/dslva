@@ -7,7 +7,7 @@ OBJCOPY=avr-objcopy
 SRC_DIR=src
 OBJ_DIR=obj
 BIN_DIR=bin
-SOURCES=main.c
+SOURCES=main.c uart.c
 OBJECTS=$(SOURCES:%.c=$(OBJ_DIR)/%.o)
 EXECUTABLE=$(BIN_DIR)/main.elf
 BINARY=$(BIN_DIR)/main.hex
@@ -28,8 +28,13 @@ PARTNO=m328p
 
 all: dirs $(BINARY)
 
+# Use this rule if a source file has a corresponding header file
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(SRC_DIR)/%.h
+	$(CC) $(CFLAGS) -DF_CPU=$(CPU) -mmcu=$(MCU) -c $< -o $@
+
+# Use this rule if a source file doesn't have a corresponding header file
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) -DF_CPU=$(CPU) -mmcu=$(MCU) -c $^ -o $@
+	$(CC) $(CFLAGS) -DF_CPU=$(CPU) -mmcu=$(MCU) -c $< -o $@
 
 $(EXECUTABLE): $(OBJECTS)
 	$(CC) -DF_CPU=$(CPU) -mmcu=$(MCU) -o $@ $^
@@ -39,6 +44,9 @@ $(BINARY): $(EXECUTABLE)
 
 flash: all
 	avrdude -v -c $(PROGRAMMER) -p $(PARTNO) -P $(PORT) -b $(BAUD) -D -U flash:w:$(BINARY):i
+
+serial:
+	picocom -b 9600 $(PORT)
 
 dirs:
 	mkdir -p $(OBJ_DIR)
