@@ -8,6 +8,6 @@
 
 void UART_init(unsigned int baud);
 
-size_t UART_print(char *str);
+size_t UART_puts(char *str, size_t len);
 
 #endif

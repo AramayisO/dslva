@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "test_circular_buffer.h": "c",
+        "circular_buffer.h": "c",
+        "uart.h": "c"
+    }
+}

@@ -2,19 +2,24 @@
 #include <util/delay.h>
 #include <string.h>
 #include "uart.h"
+#include "circular_buffer.h"
 
-int main() {
+int main()
+{
     UART_init(9600);
 
     DDRB |= (1 << PINB5);
+    PORTB &= ~(1 << PINB5);
 
-    UART_print("hello world\r\n");
-    while (1) {
-        UART_print("Blink\r\n");
-        PORTB |= (1 << PINB5);
-        _delay_ms(100);
-        PORTB &= ~(1 << PINB5);
-        _delay_ms(100);
+    char str[] = "Hello, world!\n";
+    UART_puts(str, strlen(str));
+
+    while (1)
+    {
+        // PORTB |= (1 << PINB5);
+        // _delay_ms(1000);
+        // PORTB &= ~(1 << PINB5);
+        // _delay_ms(1000);
     }
 
     return 0;
